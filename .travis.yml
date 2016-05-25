@@ -13,4 +13,4 @@ jdk:
 
 # Build with Maven.
 script:
-  - mvn clean install
+  - ./travis-build.sh
