@@ -1,6 +1,7 @@
 
 # Sample code
 
+```
 // A collector associates metrics to a monitored resource
 Collector localhostCollector = (new Collector("localhost"))
     .withTarget(new SystemResource("localhost"))
@@ -19,6 +20,7 @@ Sensor sensor = (new Sensor("SystemSensor"))
     .withPublisher(
       (new FileLoggerPublisher(outputFile))
         .withInput("AverageCpuPercent"));
+```
 
 # How to implement a driver
 
@@ -30,6 +32,7 @@ The sample code above uses a "SystemResource", and metrics called "CpuPercentMet
 
 ## TinomObject
 
+```
 public class TinomObject {
   public String name;
 
@@ -41,12 +44,14 @@ public class TinomObject {
     return "urn:uuid:" + name;
   }
 }
+```
 
 ## Metric
 
 With output channel(s) and control attributes (how data are gathered).
 A metric extends Metric, and provides output channels.
 
+```
 public class Metric extends TinomObject{
   private Resource resource;
 
@@ -63,9 +68,11 @@ public class Metric extends TinomObject{
   public abstract String get(String channelName);
 
 }
+```
 
 Example of specific metric implementation:
 
+```
 public class CpuPercentMetric extends Metric {
 
   // At least provide a constructor with name
@@ -80,11 +87,13 @@ public class CpuPercentMetric extends Metric {
     return getResource().get(channelName);
   }
 }
+```
 
 ## Aggregator
 
 Extends metric, adding input channel(s).
 
+```
 public class Aggregator extends Metric {
   public Aggregator(String name) { super(name); }
 
@@ -102,12 +111,14 @@ public class AverageAggregator extends Aggregator {
     return Double.toString(avg);
   }
 }
+```
 
 ## Collector
 
 With period (polls resource every period).
 A collector is used to wrap a resource to monitor. It extends Collector, which can be associated to a set of metrics.
 
+```
 public class Collector extends TinomObject {
 
   private Resource resource;
@@ -126,11 +137,13 @@ public class Collector extends TinomObject {
     metrics.add(metric);
   }
 }
+```
 
 ## Sensor
 
 With period (every period, aggregates and publishes).
 
+```
 public class Sensor extends TinomObject {
 
   private List<Collector> collectors;
@@ -152,7 +165,8 @@ public class Sensor extends TinomObject {
   public Sensor withPublisher(Publisher publisher) {
     this.publishers.add(publisher);
   }
-
 }
+```
+
 
 
