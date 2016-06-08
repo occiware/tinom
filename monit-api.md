@@ -11,7 +11,7 @@ Collector localhostCollector = (new Collector("localhost"))
 // A sensor gathers information from collector(s),
 // then aggregates and/or publishes them.
 Sensor sensor = (new Sensor("SystemSensor"))
-    .withPeriod(30);
+    .withPeriod(30)
     .withCollector(localhostCollector)
     .withAggregator(
       (new AverageAggregator())
@@ -102,7 +102,11 @@ public class Aggregator extends Metric {
     return this;
   }
 }
+```
 
+An implementation of Aggregator might look like this:
+
+```
 public class AverageAggregator extends Aggregator {
   public AverageAggregator(String name) { super(name); }
 
