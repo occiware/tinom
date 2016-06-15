@@ -52,7 +52,7 @@ With output channel(s) and control attributes (how data are gathered).
 A metric extends Metric, and provides output channels.
 
 ```
-public class Metric extends TinomObject{
+public abstract class Metric extends TinomObject{
   private Resource resource;
 
   public Metric(String name) { super(name); }
@@ -94,7 +94,7 @@ public class CpuPercentMetric extends Metric {
 Extends metric, adding input channel(s).
 
 ```
-public class Aggregator extends Metric {
+public abstract class Aggregator extends Metric {
   public Aggregator(String name) { super(name); }
 
   public Aggregator withInput(Metric metric, String channelName) {

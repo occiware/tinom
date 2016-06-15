@@ -16,9 +16,80 @@
 
 package org.occiware.tinom.model;
 
-/**
- * @author Vincent Zurczak - Linagora
- */
-public interface Sensor {
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
+/**
+ * @author Pierre-Yves Gibello - Linagora
+ */
+public class Sensor extends PeriodicTask {
+
+	private List<OutputInterface> collectorsAndAggregators = new LinkedList<OutputInterface>();
+	private Map<String, OutputInterface> channelMap = new HashMap<String, OutputInterface>();
+	private List<Publisher> publishers = new LinkedList<Publisher>();
+
+	/**
+	 * Creates a new Sensor.
+	 * @param name The sensor's name
+	 */
+	public Sensor(String name, int period) {
+		super(name, period);
+	}
+
+	/**
+	 * Adds a collector to this sensor.
+	 * @param collector The collector to add
+	 * @return This sensor
+	 */
+	public Sensor withCollector(Collector collector) {
+		addCollectorOrAggregator(collector);
+		return this;
+	}
+
+	/**
+	 * Adds an aggregator to this sensor.
+	 * @param aggregator The aggregator to add
+	 * @return This sensor
+	 */
+	public Sensor withAggregator(Aggregator aggregator) {
+		addCollectorOrAggregator(aggregator);
+		return this;
+	}
+	
+	private void addCollectorOrAggregator(OutputInterface collectorOrAggregator) {
+		for(String channelName : collectorOrAggregator.getOutputNames()) {
+			channelMap.put(channelName, collectorOrAggregator);
+		}
+		this.collectorsAndAggregators.add(collectorOrAggregator);
+	}
+
+	/**
+	 * Adds a publisher to this sensor.
+	 * @param aggregator The publisher to add
+	 * @return This sensor
+	 */
+	public Sensor withPublisher(Publisher publisher) {
+		publisher.setSensor(this);
+		this.publishers.add(publisher);
+		return this;
+	}
+
+	public String get(String channelName) throws NoSuchFieldException {
+		OutputInterface collectorOrAggregator = channelMap.get(channelName);
+		if(collectorOrAggregator == null) throw new NoSuchFieldException("Unknown channel: " + channelName);
+		return collectorOrAggregator.get(channelName);
+	}
+
+	@Override
+	public void run() {
+		// Aggregate then publish everything available
+		for(OutputInterface collectorOrAggregator : collectorsAndAggregators) {
+			if(collectorOrAggregator instanceof Aggregator) collectorOrAggregator.run();
+		}
+		for(Publisher publisher : publishers) {
+			publisher.run();
+		}
+	}
 }
