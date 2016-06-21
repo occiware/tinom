@@ -14,40 +14,31 @@
  * limitations under the License.
  */
 
-package org.occiware.tinom.model;
+package org.occiware.tinom.extensions.utils;
+
+import org.occiware.tinom.model.Aggregator;
+import org.occiware.tinom.model.Collector;
+import org.occiware.tinom.model.Metric;
 
 /**
+ * Aggregator that takes as inputs all metrics of a collector.
  * @author Pierre-Yves Gibello - Linagora
+ *
  */
-public abstract class Publisher extends TinomObject implements Runnable {
-
-	private String[] inputNames;
-	private Sensor sensor;
+public abstract class CollectorAggregator extends Aggregator {
 
 	/**
-	 * Creates a new Publisher.
-	 * @param name The publisher's name
+	 * Creates a new CollectorAggregator.
+	 * @param name This aggregator's name
+	 * @param collector The collector that provides metrics to aggregate
 	 */
-	public Publisher(String name) {
+	public CollectorAggregator(String name, Collector collector) {
 		super(name);
-	}
-	
-	protected void setSensor(Sensor sensor) {
-		this.sensor = sensor;
-		this.inputNames = sensor.getInputNames();
-	}
-	
-	public Publisher withInputNames(String[] channelNames) {
-		this.inputNames = channelNames;
-		return this;
+		for(Metric metric : collector.getMetrics()) {
+			for(String channelName : metric.getOutputNames()) {
+				this.withInput(metric, channelName);
+			}
+		}
 	}
 
-	public String[] getInputNames() {
-		return this.inputNames;
-	}
-
-	//TODO NPE ??
-	public String get(String channelName) throws NoSuchFieldException {
-		return sensor.get(channelName);
-	}
 }

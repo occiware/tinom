@@ -14,14 +14,33 @@
  * limitations under the License.
  */
 
-package org.occiware.tinom.model;
+package org.occiware.tinom.extensions.sample.nagiosconfig;
+
+import org.occiware.tinom.extensions.utils.PatternMatchingPublisher;
 
 /**
+ * A publisher to produce a nagios hosts.cfg config file.
  * @author Pierre-Yves Gibello - Linagora
+ *
  */
-public interface OutputInterface extends Runnable {
-	String[] getOutputNames();
-	String getName();
-	String get(String channelName) throws NoSuchFieldException;
-	String getWithoutError(String channelName);
+public class NagiosHostsPublisher extends PatternMatchingPublisher {
+
+	/**
+	 * Creates a nagios host publisher.
+	 * @param name This publisher's name
+	 */
+	public NagiosHostsPublisher(String name) {
+		super(name, ".*\\.nagioshost", System.out);
+	}
+	
+	@Override
+	public void doPublish(String name, String value) {
+		getOutputStream().println(value);
+	}
+	
+	@Override
+	public void doPublish(String name, Exception e) {
+		// Ignore exception
+	}
+
 }

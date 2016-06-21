@@ -33,7 +33,7 @@ public class SampleApp {
 					.withMetric(new CpuMetric("CpuMetric")))
 			.withPublisher(
 				(new PrintStreamPublisher("log", System.out))
-					.withInputNames(new String[] { "CpuPercent", "AvailableProcessors" }))
+					.withInputNames(new String[] { "SystemCollector.CpuPercent", "SystemCollector.AvailableProcessors" }))
 			.start();
 		
 		while(true) {

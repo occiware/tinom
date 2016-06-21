@@ -20,8 +20,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
+ * A sensor.
  * @author Pierre-Yves Gibello - Linagora
  */
 public class Sensor extends PeriodicTask {
@@ -36,6 +38,14 @@ public class Sensor extends PeriodicTask {
 	 */
 	public Sensor(String name, int period) {
 		super(name, period);
+	}
+	
+	/**
+	 * Creates a new Sensor without polling.
+	 * @param name The sensor's name
+	 */
+	public Sensor(String name) {
+		super(name, -1);
 	}
 
 	/**
@@ -58,11 +68,24 @@ public class Sensor extends PeriodicTask {
 		return this;
 	}
 	
+	/**
+	 * Adds a collector or an aggregator to this sensor.
+	 * @param collectorOrAggregator The collector or aggregator to add
+	 */
 	private void addCollectorOrAggregator(OutputInterface collectorOrAggregator) {
 		for(String channelName : collectorOrAggregator.getOutputNames()) {
-			channelMap.put(channelName, collectorOrAggregator);
+			channelMap.put(collectorOrAggregator.getName() + "." + channelName, collectorOrAggregator);
 		}
 		this.collectorsAndAggregators.add(collectorOrAggregator);
+	}
+
+	/**
+	 * Retrieves the input channel names.
+	 * @return The input channel names
+	 */
+	public String[] getInputNames() {
+		Set<String> keys = channelMap.keySet();
+		return keys.toArray(new String[keys.size()]);
 	}
 
 	/**
@@ -76,10 +99,27 @@ public class Sensor extends PeriodicTask {
 		return this;
 	}
 
+	/**
+	 * Retrieves the value available on a channel.
+	 * @param channelName The channel name = <the collector's name>.<the collector's channel name>
+	 * @return The channel's value
+	 * @throws NoSuchFieldException
+	 */
 	public String get(String channelName) throws NoSuchFieldException {
 		OutputInterface collectorOrAggregator = channelMap.get(channelName);
 		if(collectorOrAggregator == null) throw new NoSuchFieldException("Unknown channel: " + channelName);
-		return collectorOrAggregator.get(channelName);
+		String channel = channelName;
+		if(channel.startsWith(collectorOrAggregator.getName() + ".")) channel = channelName.substring(collectorOrAggregator.getName().length()+1);
+		return collectorOrAggregator.get(channel);
+	}
+
+	/**
+	 * Run all available publishers.
+	 */
+	public void publishAll() {
+		for(Publisher publisher : publishers) {
+			publisher.run();
+		}
 	}
 
 	@Override
@@ -88,8 +128,6 @@ public class Sensor extends PeriodicTask {
 		for(OutputInterface collectorOrAggregator : collectorsAndAggregators) {
 			if(collectorOrAggregator instanceof Aggregator) collectorOrAggregator.run();
 		}
-		for(Publisher publisher : publishers) {
-			publisher.run();
-		}
+		publishAll();
 	}
 }

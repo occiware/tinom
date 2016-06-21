@@ -63,7 +63,7 @@ public class Collector extends PeriodicTask implements OutputInterface {
 	
 	
 	/**
-	 * Retrieves all metrimetriccs in this collector.
+	 * Retrieves all metrics in this collector.
 	 * @return All metrics in this collector
 	 */
 	public List<Metric> getMetrics() {
@@ -83,7 +83,7 @@ public class Collector extends PeriodicTask implements OutputInterface {
 	}
 	
 	public String[] getOutputNames() {
-		Set<String> keys = channelMap.keySet();
+		Set<String> keys = this.channelMap.keySet();
 		return keys.toArray(new String[keys.size()]);
 	}
 
@@ -96,6 +96,19 @@ public class Collector extends PeriodicTask implements OutputInterface {
 		Metric metric = this.channelMap.get(channelName);
 		if(metric == null) throw new NoSuchFieldException(this.getName() + "." + channelName);
 		else return metric.get(channelName);
+	}
+	
+	/**
+	 * Retrieves data from a specified channel, without error (return null instead).
+	 * @param channelName The channel name
+	 * @return The data available on the channel, or null if not applicable
+	 */
+	public String getWithoutError(String channelName) {
+		try {
+			return get(channelName);
+		} catch(Exception e) {
+			return null;
+		}
 	}
 	
 	public void run() {
