@@ -37,11 +37,36 @@ public class PrintStreamPublisher extends Publisher {
 		String inputNames[] = getInputNames();
 		for(String inputName : inputNames) {
 			try {
-				this.out.println(inputName + "=" + get(inputName));
-			} catch(Exception e) {
-				this.out.println("Error retrieving " + inputName + ": " + e);
+				doPublish(inputName, get(inputName));
+			} catch(NoSuchFieldException e) {
+				doPublish(inputName, e);
 			}
 		}
 	}
-
+	
+	/**
+	 * Retrieves this publisher's output stream.
+	 * @return The output stream
+	 */
+	public PrintStream getOutputStream() {
+		return out;
+	}
+	
+	/**
+	 * Publishes a channel's data.
+	 * @param name The channel name
+	 * @param value The value read from the channel
+	 */
+	public void doPublish(String name, String value) {
+		this.out.println(name + "=" + value);
+	}
+	
+	/**
+	 * Publishes an exception.
+	 * @param name The channel name
+	 * @param e The exception to publish
+	 */
+	public void doPublish(String name, Exception e) {
+		this.out.println("Error retrieving " + name + ": " + e);
+	}
 }

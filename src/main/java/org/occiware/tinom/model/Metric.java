@@ -58,6 +58,15 @@ public abstract class Metric extends TinomObject implements OutputInterface {
 		throw new UnsupportedOperationException(channelName + " is read-only");
 	}
 	
+	@Override
+	public String getWithoutError(String channelName) {
+		try {
+			return get(channelName);
+		} catch(Exception e) {
+			return null;
+		}
+	}
+	
 	public void run() {
 		// Do nothing
 	}

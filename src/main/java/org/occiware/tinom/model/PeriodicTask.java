@@ -75,9 +75,12 @@ class PeriodicTaskManager extends TimerTask {
 	public void start() {
 		if(this.timer != null) {
 			this.timer.cancel();
+			this.timer = null;
 		}
-		this.timer = new Timer(true);
-		this.timer.schedule(this, 0, period * 1000);
+		if(this.period > 0) {
+			this.timer = new Timer(true);
+			this.timer.schedule(this, 0, this.period * 1000);
+		}
 	}
 	
 	public void stop() {

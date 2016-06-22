@@ -14,14 +14,29 @@
  * limitations under the License.
  */
 
-package org.occiware.tinom.model;
+package org.occiware.tinom.extensions.sample.nagiosconfig;
+
+import org.occiware.tinom.model.Sensor;
 
 /**
+ * Sample application to generate a nagios hosts.cfg configuration file.
  * @author Pierre-Yves Gibello - Linagora
  */
-public interface OutputInterface extends Runnable {
-	String[] getOutputNames();
-	String getName();
-	String get(String channelName) throws NoSuchFieldException;
-	String getWithoutError(String channelName);
+public class SampleApp {
+
+	public static void main(String[] args) {
+		Sensor sensor = new Sensor("sample");
+		sensor
+			.withCollector(
+				(new NagiosHostCollector("localhost"))
+					.withTemplate("template-hosts").withIpAddress("127.0.0.1"))
+			.withCollector(
+				(new NagiosHostCollector("mail01"))
+					.withTemplate("template-hosts").withIpAddress("192.167.0.1").withAlias("mail server"))
+			.withPublisher(
+				(new NagiosHostsPublisher("NagiosHosts")));
+		
+		sensor.publishAll();
+	}
+
 }
