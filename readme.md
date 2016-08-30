@@ -16,7 +16,7 @@ monitoring, be it in the cloud or with usual infrastructures.
 
 ## API documentation
 
-The detailed API doc can be found [here](monit-api.html).
+The detailed API doc can be found [here](monit-api.md).
 
 ## Examples
 
