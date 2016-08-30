@@ -14,6 +14,9 @@ monitoring, be it in the cloud or with usual infrastructures.
 
 **tinom** is the anagram of **monit** and stands for *Tinom Is Not OCCI Monitoring*.
 
+## API documentation
+
+The detailed API doc can be found [here](monit-api.html).
 
 ## Examples
 
