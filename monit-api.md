@@ -1,3 +1,15 @@
+# What's in Tinom API ?
+
+Tinom is a set of java APIs that implement OCCI Monitoring concepts, without any external dependency.
+Tinom itself does not provide any OCCI interface, but can be easily wrapped with OCCI web services.
+
+The concepts implemented by Tinom are properly depicted by the following schema (credit : Augusto Ciuffoletti, University of Pisa, Italy, 2013):
+
+![occimonitoring](https://cloud.githubusercontent.com/assets/1230975/18089114/8cab9ebe-6ebe-11e6-8cb1-e70631bd3b89.png)
+
+Tinom provides Sensor, Metric, Collector, Aggregator and Publisher classes, that can be used or extended to provide monitoring services compatible with OCCI monitoring concepts.
+
+Tinom also provides some utilitary classes (eg; implementations of Aggregator or Publisher that may be useful in many contexts), and a few examples to understand how the API can be used.
 
 # Sample code
 
