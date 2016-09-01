@@ -25,13 +25,11 @@ The examples below are provided in a sample package alongside with the Tinom cod
 ### Polling JMX
 
 Package: org.occiware.tinom.extensions.sample.jmx
-
-Polls local JMX server to collect localhost's CPU percent use every 10 seconds,
-then display it on the standard output console.
+Polls local JMX server to collect localhost's CPU percent use every 10 seconds, then display it on the standard output console.
 
 Tinom code follows:
 
-```
+```java
 public static void main(String[] args) {
 		Sensor sensor = new Sensor("sample", 10);
 		sensor
@@ -53,9 +51,9 @@ public static void main(String[] args) {
 	}
 ```
 
-The only specific implementation class is CpuMetric, provided in the sample package:
+The only specific implementation class is *CpuMetric*, provided in the sample package:
 
-```
+```java
 public class CpuMetric extends Metric {
 
 	public CpuMetric(String name) {
@@ -81,30 +79,28 @@ public class CpuMetric extends Metric {
 
 ### Configuring Nagios
 
-Package: org.occiware.tinom.extensions.sample.nagios
-
-Generates a nagios hosts.cfg file, that can be loaded in the Nagios configuration.
-
+Package: org.occiware.tinom.extensions.sample.nagios  
+Generates a **nagios hosts.cfg** file, that can be loaded in the Nagios configuration.
 The example generates a nagios.cfg file with 2 hosts, called "mail01" and "localhost", as follows:
 
-```
+```cfg
 define host {
-use template-hosts
-host_name mail01
-address 192.167.0.1
-alias mail server
+   use template-hosts
+   host_name mail01
+   address 192.167.0.1
+   alias mail server
 }
 define host {
-use template-hosts
-host_name localhost
-address 127.0.0.1
+   use template-hosts
+   host_name localhost
+   address 127.0.0.1
 }
 ```
-The file content is displayed on the standard output console.
 
+The file content is displayed on the standard output console.  
 Tinom code follows:
 
-```
+```java
 public static void main(String[] args) {
 		Sensor sensor = new Sensor("sample");
 		sensor
