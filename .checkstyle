@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <fileset-config file-format-version="1.2.0" simple-config="false" sync-formatter="false">
-  <local-check-config name="maven-checkstyle-plugin check-java" location="file:/home/mehdi/Bureau/occiware/tinom/checkstyle/checkstyle-java-rules.xml" type="remote" description="maven-checkstyle-plugin configuration check-java">
+  <local-check-config name="maven-checkstyle-plugin check-java" location="file:/home/mehdi/Téléchargements/new112/tinom/checkstyle/checkstyle-java-rules.xml" type="remote" description="maven-checkstyle-plugin configuration check-java">
     <property name="checkstyle.cache.file" value="${project_loc}/target/checkstyle-cachefile"/>
     <property name="checkstyle.header.file" value="/home/mehdi/Bureau/occiware/org.occiware.clouddesigner.product-linux.gtk.x86_64/workspace/.metadata/.plugins/org.eclipse.core.resources/.projects/tinom/com.basistech.m2e.code.quality.checkstyleConfigurator/checkstyle-header-check-java.txt"/>
   </local-check-config>

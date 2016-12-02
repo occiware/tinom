@@ -1,23 +1,37 @@
+/**
+ * Copyright 2016 Institut mines telecom, Telecom SudParis
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package org.occiware.tinom.aggregators;
 
 import java.util.Arrays;
 
 /**
- * Implementation of an Ordered Weighted Averaging (OWA) aggregation operator.
- *
- * @author Mehdi Ahmed-Nacer
+ * @author Mehdi Ahmed-Nacer - Telecom SudParis
  */
+
 public class OrderedWeightedAveraging implements Aggregation {
 
-    public static final ParametricFactory<OrderedWeightedAveraging> FACTORY = new ParametricFactory<OrderedWeightedAveraging>() {
+    public static final ParametricFactory FACTORY = new ParametricFactory() {
         @Override
         public OrderedWeightedAveraging create(double... params) {
             return new OrderedWeightedAveraging(params);
         }
     };
 
-    public static final ParametricFactory<Aggregation> MEOWA = new ParametricFactory<Aggregation>() {
+    public static final ParametricFactory MEOWA = new ParametricFactory() {
         @Override
         public Aggregation create(double... params) {
             if (params == null || params.length < 1)
@@ -29,21 +43,15 @@ public class OrderedWeightedAveraging implements Aggregation {
                 @Override
                 public double apply(double... values) {
                     if (owa == null)
-                        owa = MEOWA_FACTORY(values.length, rho);
+                        owa = owafactory(values.length, rho);
                     return owa.apply(values);
                 }
             };
         }
     };
 
-    /**
-     * Construct OWA operator with MEOWA weights.
-     *
-     * @param n Number of weights
-     * @param rho The andness
-     * @return OWA with weights calculated
-     */
-    public static OrderedWeightedAveraging MEOWA_FACTORY(int n, double rho) {
+
+    public static OrderedWeightedAveraging owafactory(int n, double rho) {
 
         if (rho < 0.0 || rho > 1.0)
             throw new IllegalArgumentException("andness (rho) must be within [0, 1]");
