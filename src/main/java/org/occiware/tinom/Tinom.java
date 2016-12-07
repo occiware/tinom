@@ -33,6 +33,10 @@ import com.jcraft.jsch.Session;
  */
 public class Tinom {
 
+	static final String KNOWN_HOSTS = "/home/diarraa/.ssh/known_hosts";
+	static final String PRIVATE_KEY = "/home/diarraa/.ssh/id_dsa";
+	static final String DEFAULT_USERNAME = "diarra";
+	static final String DEFAULT_PASSWORD = "";
 	/**
 	 * Connects to a remote host in ssh and executes a command.
 	 *
@@ -69,17 +73,53 @@ public class Tinom {
 	public void updateElasticSearch(File properties, String configFilePath) throws IOException, JSchException {
 
 		Properties prop = Utils.readPropertiesFile(properties);
-		File agentsIP = new File((String) prop.get("rcbf.ips.file"));
+		File agentsIP = new File((String) prop.get("rbcf.ips.file"));
+		List<String> ips = Utils.readFileByLine(agentsIP);
 		String elasticSearchIP = (String) prop.get("address");
 
 		// Prepare the command to execute on each agent
 		String command = "sed -i \'s/address = localhost/address = "+elasticSearchIP+"/g\' "+configFilePath;
 
-		List<String> ips = Utils.readFileByLine(agentsIP);
+		// Configure ssh
 		JSch jsch = new JSch();
+		jsch.setKnownHosts(KNOWN_HOSTS);
+		jsch.addIdentity(PRIVATE_KEY);
 
 		for( String ip : ips) {
-			connectAndExecuteCommand(jsch, ip, "diarra", "", command);
+			connectAndExecuteCommand(jsch, ip, DEFAULT_USERNAME, DEFAULT_PASSWORD, command);
+		}
+	}
+
+
+	/**
+	 * Sends a script file to agents in ssh and executes it.
+	 * @param properties a properties file which indicates the agents IP location file
+	 * @param script a script to execute
+	 * @param appName an application name (useful when Tinom will integrate to Roboconf)
+	 * @throws IOException
+	 * @throws JSchException
+	 * */
+	public void sendAndExecuteScript(File properties, File script, String appName) throws IOException, JSchException {
+
+		Properties prop = Utils.readPropertiesFile(properties);
+		File agentsIP = new File((String) prop.get("rbcf.ips.file"));
+		List<String> ips = Utils.readFileByLine(agentsIP);
+
+		// prepare the command to execute
+		StringBuilder sb = new StringBuilder();
+		String scriptContent = Utils.readFileContent(script);
+		String scriptName = script.getName();
+		sb.append( "echo " + scriptContent + ">" + scriptName );
+		sb.append( " ;" + " chmod u+x " + scriptName + " ;" + " ./"+scriptName );
+		String command = sb.toString();
+
+		// Configure ssh
+		JSch jsch = new JSch();
+		jsch.setKnownHosts(KNOWN_HOSTS);
+		jsch.addIdentity(PRIVATE_KEY);
+
+		for( String ip : ips) {
+			connectAndExecuteCommand(jsch, ip, DEFAULT_USERNAME, DEFAULT_PASSWORD, command);
 		}
 	}
 

@@ -16,13 +16,11 @@
 
 package org.occiware.tinom.extensions.sample.nagiosconfig;
 
-import java.util.Map;
+import java.io.File;
+import java.io.IOException;
 
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelExec;
-import com.jcraft.jsch.JSch;
+import org.occiware.tinom.Tinom;
 import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
 
 /**
  * Sample application to generate a nagios hosts.cfg configuration file.
@@ -30,7 +28,7 @@ import com.jcraft.jsch.Session;
  */
 public class SampleApp {
 
-	public static void main(String[] args) throws JSchException {
+	public static void main(String[] args) throws JSchException, IOException {
 		/*Sensor sensor = new Sensor("sample");
 		sensor
 			.withCollector(
@@ -43,7 +41,7 @@ public class SampleApp {
 				(new NagiosHostsPublisher("NagiosHosts")));
 
 		sensor.publishAll();*/
-		JSch jsch=new JSch();
+		/*JSch jsch=new JSch();
 		jsch.setKnownHosts("/home/diarraa/.ssh/known_hosts");
 
 		java.util.Properties config = new java.util.Properties();
@@ -51,17 +49,7 @@ public class SampleApp {
 		config.put("-n", "touch toto.txt");
 		Map<Object, Object> data = config;
 		System.out.println("taille = "+data.get("-n"));
-		/*HostKeyRepository hkr=jsch.getHostKeyRepository();
-		HostKey[] hks=hkr.getHostKey();
-		if(hks!=null){
-			System.out.println("Host keys in "+hkr.getKnownHostsRepositoryID());
-			for (HostKey hk : hks) {
-				System.out.println(hk.getHost()+" "+
-						hk.getType()+" "+
-						hk.getFingerPrint(jsch));
-			}
-			System.out.println("");
-		}*/
+
 		Session session=jsch.getSession("diarra", "ligone", 22);
 		session.setConfig(config);
 		session.setPassword("");
@@ -77,7 +65,16 @@ public class SampleApp {
 	    channel.connect();
 
 	    session.disconnect();
-	    channel.disconnect();
+	    channel.disconnect();*/
+
+		Tinom tinom = new Tinom();
+		File prop = new File("/home/diarraa/git/tinom/toto.properties");
+		File script = new File("/home/diarraa/git/tinom/script");
+		//String configFilePath = "etc/org.apache.karaf.decanter.appender.elasticsearch.rest.cfg";
+
+		//tinom.updateElasticSearch(prop,configFilePath);
+		tinom.sendAndExecuteScript(prop, script, "lamp");
+
 	}
 
 }
