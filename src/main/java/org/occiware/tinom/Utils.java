@@ -266,7 +266,7 @@ public final class Utils {
 
 
 	/**
-	 * Reads a text file line by line and stocks the result in a list
+	 * Reads a text file line by line and stocks the result in a list.
 	 * @param file the file whose content must be read
 	 * @throws IOException
 	 * */
