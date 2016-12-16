@@ -100,8 +100,8 @@ public class SSHconnectionSensor extends Sensor {
 			e.printStackTrace();
 		} finally {
 
-		session.disconnect();
-		channel.disconnect();
+			session.disconnect();
+			channel.disconnect();
 		}
 	}
 
