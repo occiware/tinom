@@ -30,7 +30,9 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -210,6 +212,15 @@ public final class Utils {
 
 
 	/**
+	 * @param s a string (can be null)
+	 * @return true if the string is null or only made up of white spaces
+	 */
+	public static boolean isEmptyOrWhitespaces( String s ) {
+		return s == null || s.trim().length() == 0;
+	}
+
+
+	/**
 	 * Reads properties from a file.
 	 * @param file a properties file
 	 * @return a {@link Properties} instance
@@ -229,6 +240,38 @@ public final class Utils {
 
 		return result;
 	}
+
+
+	/**
+	 * Checks a key in properties file.
+	 * @param key to be checked
+	 * @param properties a map that contains properties file elements
+	 * @throws Exception if the key is not set or does not exist
+	 * */
+	public static void checkKey(String key, Map<String,String> properties) throws Exception {
+
+		if( ! properties.containsKey( key ))
+			throw new Exception( "key '" + key + "' is missing." );
+
+		if( Utils.isEmptyOrWhitespaces( properties.get( key )))
+			throw new Exception( "key '" + key + "' must have a value." );
+	}
+
+
+	/**
+	 * Converts a properties file to map.
+	 * @param properties file to be converted
+	 * @return a map
+	 * */
+	public static Map<String,String> propertiesFileToMap(Properties properties) {
+
+		Map<String,String> result = new HashMap<>();
+		for( String key : properties.stringPropertyNames()){
+			result.put(key,properties.getProperty(key));
+		}
+		return result;
+	}
+
 
 	/**
 	 * Writes a string into a file.

@@ -17,8 +17,8 @@
 package org.occiware.tinom.extensions.ssh;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.occiware.tinom.Utils;
@@ -34,23 +34,40 @@ import com.jcraft.jsch.Session;
  * The class to use SSH connection with Tinom.
  * @author Amadou Diarra - UGA
  * */
-public class SSHconnection extends Sensor {
+public class SSHconnectionSensor extends Sensor {
 
 	/**
 	 * The constructor.
 	 * */
-	public SSHconnection(String name) {
+	public SSHconnectionSensor(String name) {
 		super(name);
 	}
 
 
-	static final String KNOWN_HOSTS = "known.hosts";
-	static final String PRIVATE_KEY = "private.key";
-	static final String USERNAME = "username";
-	static final String PASSWORD = "password";
-	static final String RBCF_IPS_FILE = "rbcf.ips.file";
-	static final String ADDRESS = "address";
-	static final String SSH_PORT = "ssh.port";
+	private static final String KNOWN_HOSTS = "known.hosts";
+	private static final String PRIVATE_KEY = "private.key";
+	private static final String USERNAME = "username";
+	private static final String PASSWORD = "password";
+	private static final String IPS_FILE = "ips.file";
+	private static final String SSH_PORT = "ssh.port";
+
+
+	/**
+	 * Validates a properties file content.
+	 * @param properties the properties
+	 * @throws Exception if an error occurred during the validation
+	 * */
+	public static void validate( Map<String,String> properties ) throws Exception {
+
+		Utils.checkKey(KNOWN_HOSTS, properties);
+		Utils.checkKey(PRIVATE_KEY, properties);
+		Utils.checkKey(USERNAME, properties);
+		Utils.checkKey(PASSWORD, properties);
+		Utils.checkKey(IPS_FILE, properties);
+		Utils.checkKey(SSH_PORT, properties);
+	}
+
+
 	/**
 	 * Connects to a remote host in ssh and executes a command.
 	 *
@@ -62,55 +79,29 @@ public class SSHconnection extends Sensor {
 	 * @param port ssh port
 	 * @throws JSchException
 	 * */
-	public void connectAndExecuteCommand(JSch jsch, String host, String username, String password, String command, int port) throws JSchException {
+	public void connectAndExecuteCommand(JSch jsch, String host, String username, String password, String command, int port) {
 
 		// Session configuration
-		Session session = jsch.getSession(username, host, port);
-		session.setPassword(password);
-		session.connect();
+		Session session = null;
+		Channel channel = null;
+		try {
 
-		// Command execution
-		Channel channel = session.openChannel("exec");
-		((ChannelExec)channel).setCommand(command);
-		channel.connect();
+			session = jsch.getSession(username, host, port);
+			session.setPassword(password);
+			session.connect();
+
+			// Command execution
+			channel = session.openChannel("exec");
+			((ChannelExec)channel).setCommand(command);
+			channel.connect();
+
+		} catch (JSchException e) {
+
+			e.printStackTrace();
+		} finally {
 
 		session.disconnect();
 		channel.disconnect();
-	}
-
-
-	/**
-	 * Updates Elasticsearch IP adress in decanter configuration file.
-	 * @param properties a properties file which indicates the agents IP location file
-	 * @param configFilePath the path to configuration file which be updated on remote host
-	 * @throws IOException
-	 * @throws JSchException
-	 * */
-	public void updateElasticSearch(File properties, String configFilePath) throws IOException, JSchException {
-
-		Properties prop = Utils.readPropertiesFile(properties);
-		File agentsIP = new File((String) prop.get(RBCF_IPS_FILE));
-
-		String elasticSearchIP = (String) prop.get(ADDRESS);
-		String knownHosts = (String) prop.get(KNOWN_HOSTS);
-		String privKey = (String) prop.get(PRIVATE_KEY);
-		String username = (String) prop.get(USERNAME);
-		String password = (String) prop.get(PASSWORD);
-		int port = (int) prop.get(SSH_PORT);
-
-		List<String> ips = Utils.readFileByLine(agentsIP);
-
-
-		// Prepare the command to execute on each agent
-		String command = "sed -i \'s/address = localhost/address = "+elasticSearchIP+"/g\' "+configFilePath;
-
-		// Configure ssh
-		JSch jsch = new JSch();
-		jsch.setKnownHosts(knownHosts);
-		jsch.addIdentity(privKey);
-
-		for( String ip : ips) {
-			connectAndExecuteCommand(jsch, ip, username, password, command, port);
 		}
 	}
 
@@ -120,14 +111,17 @@ public class SSHconnection extends Sensor {
 	 * @param properties a properties file which indicates the agents IP location file
 	 * @param script a script to execute
 	 * @param appName an application name (useful when Tinom will integrate to Roboconf)
-	 * @throws IOException
-	 * @throws JSchException
+	 * @throws Exception
 	 * */
-	public void sendAndExecuteScript(File properties, File script, String appName) throws IOException, JSchException {
+	public void sendAndExecuteScript(File properties, File script, String appName) throws Exception {
 
 		Properties prop = Utils.readPropertiesFile(properties);
-		File agentsIP = new File((String) prop.get(RBCF_IPS_FILE));
 
+		// Validate properties file
+		Map<String,String> propMap = Utils.propertiesFileToMap(prop);
+		validate(propMap);
+
+		File agentsIP = new File((String) prop.get(IPS_FILE));
 		String knownHosts = (String) prop.get(KNOWN_HOSTS);
 		String privKey = (String) prop.get(PRIVATE_KEY);
 		String username = (String) prop.get(USERNAME);
@@ -136,7 +130,7 @@ public class SSHconnection extends Sensor {
 
 		List<String> ips = Utils.readFileByLine(agentsIP);
 
-		// prepare the command to execute
+		// Prepare the command to execute
 		StringBuilder sb = new StringBuilder();
 		String scriptContent = Utils.readFileContent(script);
 
