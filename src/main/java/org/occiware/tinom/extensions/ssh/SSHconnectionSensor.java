@@ -134,8 +134,9 @@ public class SSHconnectionSensor extends Sensor {
 		StringBuilder sb = new StringBuilder();
 		String scriptContent = Utils.readFileContent(script);
 
-		sb.append("bash <<ENDOFSCRIPT ");
+		sb.append("bash <<ENDOFSCRIPT\n");
 		sb.append(scriptContent);
+		sb.append("\n");
 		sb.append("ENDOFSCRIPT");
 		String command = sb.toString();
 
