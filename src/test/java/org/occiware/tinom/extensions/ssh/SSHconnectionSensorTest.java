@@ -16,6 +16,10 @@
 
 package org.occiware.tinom.extensions.ssh;
 
+/**
+ * A class for unit tests in SSHconnectionSensor.
+ * @author Amadou Diarra - UGA
+ * */
 public class SSHconnectionSensorTest {
-
+	//TODO
 }

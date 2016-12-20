@@ -52,7 +52,7 @@ public class SSHconnectionSensor extends Sensor {
 	private static final String IPS_FILE = "ips.file";
 	private static final String SSH_PORT = "ssh.port";
 
-	private static final Logger logger = Logger.getLogger( SSHconnectionSensor.class.getName());
+	private static Logger logger = Logger.getLogger( SSHconnectionSensor.class.getName());
 
 
 	/**

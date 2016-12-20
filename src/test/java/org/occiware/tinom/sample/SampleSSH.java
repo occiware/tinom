@@ -30,7 +30,7 @@ public class SampleSSH {
 
 		SSHconnectionSensor sshConnection = new SSHconnectionSensor("Connexion ssh");
 
-		File prop = new File("/home/diarraa/git/tinom/toto.properties");
+		File prop = new File("/home/diarraa/git/tinom/ipsList.properties");
 		File script = new File("/home/diarraa/git/tinom/script");
 
 		try {

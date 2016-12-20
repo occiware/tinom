@@ -330,7 +330,6 @@ public final class Utils {
 		}
 		brd.close();
 		return result;
-
 	}
 
 
