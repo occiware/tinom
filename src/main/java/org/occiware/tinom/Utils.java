@@ -27,7 +27,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -329,5 +331,19 @@ public final class Utils {
 		brd.close();
 		return result;
 
+	}
+
+
+	/**
+	 * Writes an exception's stack trace into a string.
+	 * @param e an exception (not null)
+	 * @return a string
+	 */
+	public static String writeException( Exception e ) {
+
+		StringWriter sw = new StringWriter();
+		e.printStackTrace( new PrintWriter( sw ));
+
+		return sw.toString();
 	}
 }

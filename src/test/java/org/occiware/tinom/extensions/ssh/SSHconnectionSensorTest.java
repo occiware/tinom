@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-package org.occiware.tinom;
+package org.occiware.tinom.extensions.ssh;
 
-/**
- * The main class to use Tinom's APIs.
- * @author Vincent Zurczak - Linagora
- */
-public class Tinom {
+public class SSHconnectionSensorTest {
 
 }

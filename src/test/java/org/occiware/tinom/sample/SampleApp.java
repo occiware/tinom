@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-package org.occiware.tinom.extensions.sample.nagiosconfig;
+package org.occiware.tinom.sample;
+
+import org.occiware.tinom.extensions.sample.nagiosconfig.NagiosHostCollector;
+import org.occiware.tinom.extensions.sample.nagiosconfig.NagiosHostsPublisher;
+import org.occiware.tinom.model.Sensor;
 
 /**
  * Sample application to generate a nagios hosts.cfg configuration file.
@@ -22,7 +26,7 @@ package org.occiware.tinom.extensions.sample.nagiosconfig;
  */
 public class SampleApp {
 
-	/*public static void main(String[] args) throws JSchException, IOException {
+	public static void main(String[] args) {
 		Sensor sensor = new Sensor("sample");
 		sensor
 			.withCollector(
@@ -36,6 +40,6 @@ public class SampleApp {
 
 		sensor.publishAll();
 
-	}*/
+	}
 
 }

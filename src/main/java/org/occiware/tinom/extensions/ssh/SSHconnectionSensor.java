@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import org.occiware.tinom.Utils;
 import org.occiware.tinom.model.Sensor;
@@ -31,7 +32,7 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
 /**
- * The class to use SSH connection with Tinom.
+ * A class to configure sensors with SSH.
  * @author Amadou Diarra - UGA
  * */
 public class SSHconnectionSensor extends Sensor {
@@ -50,6 +51,8 @@ public class SSHconnectionSensor extends Sensor {
 	private static final String PASSWORD = "password";
 	private static final String IPS_FILE = "ips.file";
 	private static final String SSH_PORT = "ssh.port";
+
+	private static final Logger logger = Logger.getLogger( SSHconnectionSensor.class.getName());
 
 
 	/**
@@ -93,11 +96,12 @@ public class SSHconnectionSensor extends Sensor {
 			// Command execution
 			channel = session.openChannel("exec");
 			((ChannelExec)channel).setCommand(command);
+			logger.fine("The command : " + command + "will be executed on host " + host);
 			channel.connect();
 
 		} catch (JSchException e) {
 
-			e.printStackTrace();
+			logger.severe(Utils.writeException(e));
 		} finally {
 
 			session.disconnect();
@@ -107,7 +111,7 @@ public class SSHconnectionSensor extends Sensor {
 
 
 	/**
-	 * Sends a script file to agents in ssh and executes it.
+	 * Sends a script file to remote host in ssh and executes it.
 	 * @param properties a properties file which indicates the agents IP location file
 	 * @param script a script to execute
 	 * @param appName an application name (useful when Tinom will integrate to Roboconf)
@@ -134,7 +138,7 @@ public class SSHconnectionSensor extends Sensor {
 		StringBuilder sb = new StringBuilder();
 		String scriptContent = Utils.readFileContent(script);
 
-		sb.append("bash <<ENDOFSCRIPT\n");
+		sb.append("<<ENDOFSCRIPT\n");
 		sb.append(scriptContent);
 		sb.append("\n");
 		sb.append("ENDOFSCRIPT");
@@ -142,12 +146,16 @@ public class SSHconnectionSensor extends Sensor {
 
 		// Configure ssh
 		JSch jsch = new JSch();
+
+		logger.fine("SSH session configuration");
 		jsch.setKnownHosts(knownHosts);
 		jsch.addIdentity(privKey);
 
 		for( String ip : ips) {
 			connectAndExecuteCommand(jsch, ip, username, password, command, port);
+			logger.fine("Script execution on host " +ip+ "is complete");
 		}
+		logger.fine("Script execution completed on all hosts");
 	}
 
 }
