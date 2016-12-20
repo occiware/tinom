@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package org.occiware.tinom.extensions.sample.nagiosconfig;
+package org.occiware.tinom.sample;
 
+import org.occiware.tinom.extensions.sample.nagiosconfig.NagiosHostCollector;
+import org.occiware.tinom.extensions.sample.nagiosconfig.NagiosHostsPublisher;
 import org.occiware.tinom.model.Sensor;
 
 /**
@@ -35,8 +37,9 @@ public class SampleApp {
 					.withTemplate("template-hosts").withIpAddress("192.167.0.1").withAlias("mail server"))
 			.withPublisher(
 				(new NagiosHostsPublisher("NagiosHosts")));
-		
+
 		sensor.publishAll();
+
 	}
 
 }
