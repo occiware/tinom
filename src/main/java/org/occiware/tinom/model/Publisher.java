@@ -34,7 +34,8 @@ public abstract class Publisher extends TinomObject implements Runnable {
 	
 	protected void setSensor(Sensor sensor) {
 		this.sensor = sensor;
-		this.inputNames = sensor.getInputNames();
+		// Default full input list, except if already filtered
+		if(this.inputNames == null) this.inputNames = sensor.getInputNames();
 	}
 	
 	public Publisher withInputNames(String[] channelNames) {

@@ -130,4 +130,17 @@ public class Sensor extends PeriodicTask {
 		}
 		publishAll();
 	}
+	
+	public String toString() {
+		StringBuilder ret = new StringBuilder("Sensor ID: " + getId() + " / name: " + getName() + "\n"
+				+ "  |-- Full input list: { ");
+		
+		boolean first = true;
+		for (String inputName: getInputNames()) {
+			ret.append((first ? "" : ", ") + inputName);
+			first = false;
+		}
+		ret.append("}\n");
+		return ret.toString();
+	}
 }
